@@ -1,0 +1,292 @@
+<html>
+    <head>
+        {% load staticfiles %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/common.css' %}">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+        <link rel="stylesheet" href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" />
+        <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
+        {% block header %}{% endblock %}
+    </head>
+
+    <body class="container">
+    {% load crispy_forms_tags %}
+    {% crispy form %}
+    </body>
+    <script>
+        var uuid = "{{ uuid }}";
+        jQuery(document).ready(function() {
+            var mymap = L.map('mapid').setView([50.4658, 4.8671], 10);
+            var osm_malnik = L.tileLayer('https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=d34452b5a3694784bc51b05187b62155', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            });
+
+            osm_malnik.addTo(mymap);
+            function settingUp(f,l) {
+                var out = [];
+                image = '';
+                if (f.properties && f.geometry.type === 'Point'){
+                    for (key in f.properties) {
+                        if (key == "disabled") continue;
+                        if (key == "track-id") {
+                            if (!("disabled" in f.properties)) {
+                                l.on('click', function() {
+                                    // Do on point
+                                    $("#id_meeting_point option[value='" + f.properties["track-id"] +"']").prop('selected', true);
+                                });
+                            }                    
+                            continue;
+                        }
+                        // ignore marker for now;
+                        if (key.startsWith("marker")) continue;
+                        // Add image
+                        if (key === 'image') {
+                            image = f.properties[key];
+                            continue;
+                        }
+
+                        out.push("<strong>" + key + "</strong>: "+f.properties[key]);
+                    }
+
+                    // Prepend image
+                    out.unshift("<img src='" + image + "'/>");
+
+                    l.bindPopup(out.join("<br />"));
+
+                    colorMap = {"#ff0000": 'red', '#0000ff': 'blue', '#ffff00': 'orange', '#00ff00': 'green', '#804040': 'darkpurple', '#ff00ff': 'pink'}
+                    markerMap = {'bicycle': 'bicycle', 'school': 'users'}
+
+                    // Set icon
+                    var marker = L.AwesomeMarkers.icon({
+                        prefix: 'fa',
+                        icon: markerMap[f.properties['marker-symbol']],
+                        markerColor: colorMap[f.properties['marker-color']]
+                    });
+                    l.setIcon(marker);
+
+                    return;
+                }
+
+                if (f.geometry && f.geometry.type === 'LineString') {
+                    if (f.properties) {
+                        l.options.weight = f.properties['stroke-width'] + 3;
+                        l.options.color = f.properties['stroke'];
+                        l.options.opacity = f.properties['stroke-opacity'];
+                    }
+                }
+            }
+            var jsonTest = new L.GeoJSON.AJAX(["/static/jour-mobi19.geojson"],{onEachFeature:settingUp}).addTo(mymap);
+
+            // En vélo ou pas.
+            if (jQuery("#id_school").val() != 1) {
+                jQuery("#div_id_by_bike").hide();
+            }
+            jQuery("#id_school").change(function () {
+                if (jQuery("#id_school").val() == 1) {
+                    jQuery("#div_id_by_bike").show();
+                } else {
+                    jQuery("#div_id_by_bike").hide();
+                    jQuery("#id_by_bike").prop('checked', true);
+                    jQuery(".nav-tabs li:eq(2)").addClass("disabled");
+                    jQuery(".nav-tabs li:eq(1)").removeClass("disabled");
+                }
+            });
+
+            if (jQuery("#id_by_bike").is(":checked")) {
+                jQuery(".nav-tabs li:eq(2)").addClass("disabled");
+            } else {
+                jQuery(".nav-tabs li:eq(1)").addClass("disabled");
+            }
+
+            jQuery("#id_by_bike").change(function() {
+                if (jQuery("#id_by_bike").is(":checked")) {
+                    jQuery(".nav-tabs li:eq(2)").addClass("disabled");
+                    jQuery(".nav-tabs li:eq(1)").removeClass("disabled");
+                } else {
+                    jQuery(".nav-tabs li:eq(1)").addClass("disabled");
+                    jQuery(".nav-tabs li:eq(2)").removeClass("disabled");
+                }
+            })
+
+            // Retour différent.
+            jQuery("#id_custom_return").change(function() {
+                if (jQuery("#id_custom_return").is(":checked")) {
+                    jQuery("#div_id_modality_return").show();
+                } else {
+                    jQuery("#div_id_modality_return").hide();
+                }
+            });
+
+            // Trajet personnel ou pas.
+            if (jQuery("#id_no_meeting").is(":checked")) {
+                jQuery("#div_id_meeting_point").hide();
+                jQuery("#div_id_custom_return").hide();
+                jQuery("#div_id_modality_return").hide();
+            } else {
+                jQuery("#div_id_meeting_point").show();
+                jQuery("#div_id_custom_return").show();
+                jQuery("#div_id_modality_return").show();
+                if (jQuery("#id_custom_return").is(":checked")) {
+                    jQuery("#div_id_modality_return").show();
+                } else {
+                    jQuery("#div_id_modality_return").hide();
+                }
+            }
+
+            jQuery("#id_no_meeting").change(function() {
+                if (jQuery("#id_no_meeting").is(":checked")) {
+                    jQuery("#id_meeting_point").val("");
+                    jQuery("#div_id_meeting_point").hide();
+                    jQuery("#div_id_custom_return").hide();
+                    jQuery("#id_custom_return").prop('checked', false);
+                    jQuery("#div_id_modality_return").hide();
+                    jQuery("#id_modality_return").val("");
+                    jQuery("#mapid").hide();
+                    jQuery("#maplabel").hide();
+                } else {
+                    jQuery("#div_id_meeting_point").show();
+                    jQuery("#div_id_custom_return").show();
+                    jQuery("#div_id_modality_return").show();
+                    jQuery("#mapid").show();
+                    jQuery("#maplabel").show();
+                    mymap.invalidateSize();
+                    if (jQuery("#id_custom_return").is(":checked")) {
+                        jQuery("#div_id_modality_return").show();
+                    } else {
+                        jQuery("#div_id_modality_return").hide();
+                    }
+                }
+            });
+
+            // Disable effectively disabled tabs.
+            jQuery(".nav-tabs li").on("click", function(e) {
+                if (jQuery(this).hasClass("disabled")) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            function testIdentification() {
+                let errors = [];
+                if (jQuery("#id_school").val() == "")
+                    errors.push("École");
+                if (jQuery("#id_year").val() == "")
+                    errors.push("Année d'étude");
+                if (jQuery("#id_classe").val() == "")
+                    errors.push("Classe");
+                if (jQuery("#id_first_name").val() == "")
+                    errors.push("Prénom");
+                if (jQuery("#id_last_name").val() == "")
+                    errors.push("Nom");
+                if (jQuery("#id_email").val() == "")
+                    errors.push("Email");
+                
+                if (errors.length > 0)
+                    return "Les champs suivants ne sont pas remplis : " + errors.join(", ");
+                
+                return "";
+            }
+
+            function testByBike() {
+                let errors = [];
+                if (jQuery("#id_address_start").val() == "")
+                    errors.push("Adresse de départ");
+                if (jQuery("#id_contact_return").val() == "")
+                    errors.push("Personne de contact");
+                if (jQuery("#id_contact_phone_return").val() == "")
+                    errors.push("Téléphone de contact");
+                
+                if (!jQuery("#id_no_meeting").is(":checked")) {
+                    if (jQuery("#id_meeting_point").val() == "")
+                        errors.push("Lieu de rencontre");
+                    
+                    if (jQuery("#id_custom_return").is(":checked")) {
+                        if (jQuery("#id_modality_return").val() == "")
+                            errors.push("Modalité de retour");
+                    }
+                }
+                if (errors.length > 0)
+                    return "Les champs suivants ne sont pas remplis : " + errors.join(", ");
+                
+                return "";
+            };
+
+            // Move to following tab if button is pressed.
+            jQuery("#button-id-from_ident").click(function(e) {
+                const errors = testIdentification();
+                if (errors.length > 0) {
+                    jQuery("#identification-error").text(errors).show();
+                    return;
+                } else {
+                    jQuery("#identification-error").hide().text("");
+                }
+
+                if (jQuery("#id_by_bike").is(":checked")) {
+                    jQuery(".nav-tabs li:eq(1) a").tab("show");
+                    mymap.invalidateSize();
+                } else {
+                    jQuery(".nav-tabs li:eq(2) a").tab("show");
+                }
+            });
+
+            jQuery("a[href='#en-velo'").click(function () {
+                window.setTimeout(function (){mymap.invalidateSize();}, 1000)
+            })
+
+            jQuery("#button-id-from_other").click(function(e) {
+                jQuery(".nav-tabs li:eq(3) a").tab("show");
+            })
+
+            jQuery("#button-id-from_bike").click(function(e) {
+                const errors = testByBike();
+                if (errors.length > 0) {
+                    jQuery("#bike-error").text(errors).show();
+                    return;
+                } else {
+                    jQuery("#bike-error").hide().text("");
+                    jQuery(".nav-tabs li:eq(3) a").tab("show");
+                }
+            });
+
+            // Handle submitting.
+            jQuery("#submit-id-submit").click(function(e) {
+                e.preventDefault();
+
+                let submit = jQuery("#submit-id-submit");
+                submit.attr("disabled", "disabled");
+
+                let data = jQuery("form").serializeArray().reduce(function(o, val) { o[val.name] = val.value; return o; }, {});
+                // Test forms.
+                const errorIdent = testIdentification(data);
+                if (errorIdent.length > 0) {
+
+                }
+
+                submit.val("En cours…");
+                
+                data['csrfmiddlewaretoken'] = '{{ csrf_token }}';
+                const update = uuid.length > 0;
+                let ajax = {
+                    url: update ? "/mobilityday/api/mobilityday/" + uuid + "/" : "/mobilityday/api/mobilityday/",
+                    method: update ? "PUT" : "POST",
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    data: data,
+                    success: function(data) {
+                        uuid = data.uuid;
+                        submit.val("Soumettre");
+                        submit.removeAttr("disabled");
+                    }
+                };
+                jQuery.ajax(ajax);
+            })
+        });
+    </script>
+</html>

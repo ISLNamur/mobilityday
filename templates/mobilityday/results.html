@@ -1,0 +1,70 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<script>
+    const school = {};
+    function loadStudents() {
+        let url = "/mobilityday/api/mobilityday/?";
+        const selectedSchool = jQuery("#select").val();
+        if (selectedSchool)
+            url += "school=" + selectedSchool;
+        jQuery("#list").remove();
+        jQuery.getJSON(url, function (data) {
+            let items = [];
+            jQuery.each(data.results, function (index, inscription) {
+                let html = '<a class="list-group-item" data-toggle="collapse" href="#';
+                html += inscription.uuid;
+                html += '" aria-expanded="false" aria-controls="';
+                html += inscription.uuid;
+                html += '">';
+                html += '<h4 class="list-group-item-heading">';
+                html += inscription.last_name + ' ' + inscription.first_name + ' (<em>' + schools[inscription.school] + '</em>)';
+                html += '</h4>';
+                html += '<div class="list-group-item-text">';
+                html += '<ul>';
+                html += '<li>Classe : ' + inscription.year + inscription.classe.toUpperCase() + '</li>';
+                html += '<li>Vient en vélo : ';
+                html += inscription.by_bike ? 'Oui' : 'Non';
+                html += '</li>';
+                html += '<li>E-mail : ' + inscription.email + '</li>';
+                html += '</ul>';
+                html += '</div>';
+                html += '<div class="collapse" id="';
+                html += inscription.uuid;
+                html += '">';
+                html += '<div class="well">';
+                html += '';
+                html += '</div></div></a>';
+                items.push(html);
+            });
+
+            $( "<div/>", {
+                "id": "list",
+                "class": "list-group",
+                html: items.join( "" )
+            }).appendTo( "body" );
+        });
+    };
+
+    jQuery(document).ready(function () {
+        // Get schools.
+        jQuery.getJSON("/mobilityday/api/school/", function (data){
+            schools = data.results.reduce(function(o, val) { o[val.id] = val.name; return o; }, {});
+            let items = ['<option disabled="disabled" selected="true">Choisir une école</option>'];
+            jQuery.each(data.results, function (index, item) {
+                items.push('<option value="' + item.id + '">' + item.name + "</option>");
+            });
+            $( "<select/>", {
+                "id": "school",
+                "class": "form-control",
+                html: items.join( "" )
+            }).appendTo( "body" );
+            jQuery("#school").change(function () {
+                loadStudents();
+            });
+            loadStudents();
+        });
+    });
+    
+</script>
+{% endblock %}

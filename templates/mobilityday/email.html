@@ -1,0 +1,23 @@
+<html>
+    <body>
+        <p>Merci d'avoir soumis votre inscription. Pour toute information complémentaire, n'hésitez pas à nous contacter sur <a href='mailto:christophe.furnemont@isln.be'>christophe.furnemont@isln.be</a>.</p> <p>En cas d'urgence uniquement (!) vous pouvez contacter le responsable du trajet ".$responsable.". Merci de garder cette information confidentielle.</p>
+        <p>Pour rappel, afin que l'inscription soit effective les conventions «Parent-Élèves» doivent être signées et rendues à votre éducateur.</p>
+        <p>Vos informations :</p>
+            <ul>
+                <li>Nom : {{ o.last_name }}</li>
+                <li>Prénom : {{ o.first_name }} </li>
+                <li>École : {{ o.school.name }} </li>
+                <li>Classe : {{ o.year }}{{ o.classe|upper }}</li>
+                {% if o.by_bike %}
+                {% if not o.no_meeting %}<li>Lieu rencontre : {{ o.meeting_point.name }} </li>{% endif %}
+                <li>Adresse du domicile de départ : {{ o.address_start }}</li>
+                {% if o.modality_return %}<li>Modalité de retour : {{ o.modality_return }}</li>{% endif %}
+                <li>Personne de contact : {{ o.contact_return }}</li>
+                <li>Téléphone de contact : {{ o.contact_phone_return }}</li>
+                {% endif %}
+            </ul>
+        <p>Vous pouvez modifier vos informations à l'adresse unique suivante : <a href='{{ url }}/mobilityday/change/{{ o.uuid }}/' >http://localhost:8000/mobilityday/change/{{ o.uuid }}/</a>.
+        <p>Cordialement,</p>
+        <p>Service informatique de l'Institut Saint-Louis Namur.</p>
+    </body>
+</html>
