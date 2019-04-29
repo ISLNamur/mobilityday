@@ -6,13 +6,12 @@
     const school = {};
     function loadStudents() {
         const transportations = {1: "En voiture", 2: "En bus", 3: "En train", 4: "À pied", 5: "En covoiturage"}
-        let url = "/mobilityday/api/mobilityday/?";
+        let url = "/mobilityday/api/mobilityday/?page_size=200";
         const selectedSchool = jQuery("#school").val();
         const selectedTrack = jQuery("#track").val();
         if (selectedSchool)
-            url += "school=" + selectedSchool;
-            if (url[url.length - 1] != "?") url += "&";
-            url += "meeting_point__track=" + selectedTrack;
+            url += "&school=" + selectedSchool;
+            url += "&meeting_point__track=" + selectedTrack;
         jQuery("#list").remove();
         jQuery.getJSON("/mobilityday/api/meeting/?page_size=200", function (data) {
             const meetings = data.results;

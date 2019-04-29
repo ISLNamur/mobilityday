@@ -47,11 +47,17 @@ class MobilityFilter(filters.FilterSet):
         fields = ("school", "meeting_point__track",)
 
 
+class PageNumberSizePagination(PageNumberPagination):
+    page_size_query_param = "page_size"
+    max_page_size = 1000
+
+
 class MobilityDayViewSet(ModelViewSet):
     queryset = StudentMobilityModel.objects.all()
     serializer_class = StudentMobilitySerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter,)
     filter_class = MobilityFilter
+    pagination_class = PageNumberSizePagination
 
     def perform_create(self, serializer):
         email = serializer.validated_data["email"]
@@ -64,11 +70,6 @@ class MobilityDayViewSet(ModelViewSet):
 class SchoolMobilityViewSet(ReadOnlyModelViewSet):
     queryset = SchoolMobilityModel.objects.all()
     serializer_class = SchoolMobilitySerializer
-
-
-class PageNumberSizePagination(PageNumberPagination):
-    page_size_query_param = "page_size"
-    max_page_size = 1000
 
 
 class MeetingMobilityViewSet(ReadOnlyModelViewSet):
