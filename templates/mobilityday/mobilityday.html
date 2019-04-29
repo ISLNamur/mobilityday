@@ -186,11 +186,13 @@
                     errors.push("Prénom");
                 if (jQuery("#id_last_name").val() == "")
                     errors.push("Nom");
-                if (jQuery("#id_email").val() == "")
+                const email = jQuery("#id_email").val();
+                const re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+                if (!re.test(email))
                     errors.push("Email");
                 
                 if (errors.length > 0)
-                    return "Les champs suivants ne sont pas remplis : " + errors.join(", ");
+                    return "Les champs suivants ne sont pas remplis ou corrects : " + errors.join(", ") + ".";
                 
                 return "";
             }
@@ -214,10 +216,21 @@
                     }
                 }
                 if (errors.length > 0)
-                    return "Les champs suivants ne sont pas remplis : " + errors.join(", ");
+                    return "Les champs suivants ne sont pas remplis : " + errors.join(", ") + ".";
                 
                 return "";
             };
+
+            function testOther() {
+                let errors = [];
+                if (jQuery("#id_transportation").val() == "")
+                    errors.push("Moyen de transport");
+                
+                if (errors.length > 0)
+                return "Les champs suivants ne sont pas remplis : " + errors.join(", ") + ".";
+                
+                return "";
+            }
 
             // Move to following tab if button is pressed.
             jQuery("#button-id-from_ident").click(function(e) {
@@ -242,6 +255,14 @@
             })
 
             jQuery("#button-id-from_other").click(function(e) {
+                const errors = testOther();
+                if (errors.length > 0) {
+                    jQuery("#other-error").text(errors).show();
+                    return;
+                } else {
+                    jQuery("#other-error").hide().text("");
+                    jQuery(".nav-tabs li:eq(3) a").tab("show");
+                }
                 jQuery(".nav-tabs li:eq(3) a").tab("show");
             })
 
@@ -265,13 +286,23 @@
 
                 let data = jQuery("form").serializeArray().reduce(function(o, val) { o[val.name] = val.value; return o; }, {});
                 // Test forms.
-                const errorIdent = testIdentification(data);
-                if (errorIdent.length > 0) {
+                let errors = testIdentification(data);
+                if (jQuery("#id_by_bike").is(":checked")) {
+                    errors += " " + testByBike();
+                } else {
+                    errors += " " + testOther();
+                }
 
+                if (errors.length > 2) {
+                    jQuery("#all-error").text(errors).show();
+                    submit.removeAttr("disabled");
+                    return;
+                } else {
+                    jQuery("#all-error").hide().text("");
                 }
 
                 submit.val("En cours…");
-                
+
                 data['csrfmiddlewaretoken'] = '{{ csrf_token }}';
                 const update = uuid.length > 0;
                 let ajax = {

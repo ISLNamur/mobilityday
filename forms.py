@@ -59,10 +59,26 @@ class StudentMobilityForm(forms.ModelForm):
                     ),
                 Tab("Autrement",
                     Field("transportation"),
+                    Div(
+                        HTML("Problème"),
+                        css_class="alert alert-danger",
+                        css_id="other-error",
+                        role="alert",
+                        style="display:none;margin-top:15px"
+                    ),
                     Button("from_other", "Suivant"),
                     ),
                 Tab("Enregistrement",
+                    Alert(content="Un email de confirmation sera envoyé. Un lien sera mis à votre disposition afin de modifier les données de l'inscription. Si vous ne voyez pas l'email, merci de regarder dans le dossier des courriers indésirables.",
+                          css_class="alert-info"),
                     Submit('submit', 'Soumettre'),
+                    Div(
+                        HTML("Problème"),
+                        css_class="alert alert-danger",
+                        css_id="all-error",
+                        role="alert",
+                        style="display:none;margin-top:15px"
+                    ),
                     Div(
                         HTML("La demande a bien été envoyé. Merci ! Un email vous a été envoyé."),
                         css_class="alert alert-success",
