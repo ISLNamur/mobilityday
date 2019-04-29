@@ -56,7 +56,7 @@ class MobilityDayViewSet(ModelViewSet):
         email = serializer.validated_data["email"]
         core_settings = CoreSettingsModel.objects.first()
         url = core_settings.root
-        send_email(email, "Inscription pour la journée mobilité", email_template="mobilityday/email.html",
+        send_email([email], "Inscription pour la journée mobilité", email_template="mobilityday/email.html",
                    context={'o': serializer.save, 'url': url})
 
 
