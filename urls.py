@@ -15,4 +15,5 @@ urlpatterns = [
 router = DefaultRouter()
 router.register(r'api/mobilityday', views.MobilityDayViewSet)
 router.register(r'api/school', views.SchoolMobilityViewSet)
+router.register(r'api/meeting', views.MeetingMobilityViewSet)
 urlpatterns += router.urls

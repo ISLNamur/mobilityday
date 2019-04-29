@@ -4,15 +4,16 @@ from django.db.models import ObjectDoesNotExist
 
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.filters import OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 
 from django_filters import rest_framework as filters
 
 from core.email import send_email
 from core.models import CoreSettingsModel
 
-from .models import StudentMobilityModel, SchoolMobilityModel
+from .models import StudentMobilityModel, SchoolMobilityModel, MeetingMobilityModel
 from .forms import StudentMobilityForm
-from .serializers import StudentMobilitySerializer, SchoolMobilitySerializer
+from .serializers import StudentMobilitySerializer, SchoolMobilitySerializer, MeetingMobilitySerializer
 
 
 class MobilityDayTemplate(TemplateView):
@@ -43,7 +44,7 @@ class ResultsTemplate(LoginRequiredMixin, PermissionRequiredMixin, TemplateView)
 class MobilityFilter(filters.FilterSet):
     class Meta:
         model = StudentMobilityModel
-        fields = "__all__"
+        fields = ("school", "meeting_point__track",)
 
 
 class MobilityDayViewSet(ModelViewSet):
@@ -63,3 +64,14 @@ class MobilityDayViewSet(ModelViewSet):
 class SchoolMobilityViewSet(ReadOnlyModelViewSet):
     queryset = SchoolMobilityModel.objects.all()
     serializer_class = SchoolMobilitySerializer
+
+
+class PageNumberSizePagination(PageNumberPagination):
+    page_size_query_param = "page_size"
+    max_page_size = 1000
+
+
+class MeetingMobilityViewSet(ReadOnlyModelViewSet):
+    queryset = MeetingMobilityModel.objects.all()
+    serializer_class = MeetingMobilitySerializer
+    pagination_class = PageNumberSizePagination
