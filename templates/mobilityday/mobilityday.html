@@ -119,9 +119,9 @@
             // Retour différent.
             jQuery("#id_custom_return").change(function() {
                 if (jQuery("#id_custom_return").is(":checked")) {
-                    jQuery("#div_id_modality_return").show();
+                    jQuery("#return").show();
                 } else {
-                    jQuery("#div_id_modality_return").hide();
+                    jQuery("#return").hide();
                 }
             });
 
@@ -129,15 +129,15 @@
             if (jQuery("#id_no_meeting").is(":checked")) {
                 jQuery("#div_id_meeting_point").hide();
                 jQuery("#div_id_custom_return").hide();
-                jQuery("#div_id_modality_return").hide();
+                jQuery("#return").hide();
             } else {
                 jQuery("#div_id_meeting_point").show();
                 jQuery("#div_id_custom_return").show();
-                jQuery("#div_id_modality_return").show();
+                jQuery("#return").show();
                 if (jQuery("#id_custom_return").is(":checked")) {
-                    jQuery("#div_id_modality_return").show();
+                    jQuery("#return").show();
                 } else {
-                    jQuery("#div_id_modality_return").hide();
+                    jQuery("#return").hide();
                 }
             }
 
@@ -147,21 +147,21 @@
                     jQuery("#div_id_meeting_point").hide();
                     jQuery("#div_id_custom_return").hide();
                     jQuery("#id_custom_return").prop('checked', false);
-                    jQuery("#div_id_modality_return").hide();
+                    jQuery("#return").hide();
                     jQuery("#id_modality_return").val("");
                     jQuery("#mapid").hide();
                     jQuery("#maplabel").hide();
                 } else {
                     jQuery("#div_id_meeting_point").show();
                     jQuery("#div_id_custom_return").show();
-                    jQuery("#div_id_modality_return").show();
+                    jQuery("#return").show();
                     jQuery("#mapid").show();
                     jQuery("#maplabel").show();
                     mymap.invalidateSize();
                     if (jQuery("#id_custom_return").is(":checked")) {
-                        jQuery("#div_id_modality_return").show();
+                        jQuery("#return").show();
                     } else {
-                        jQuery("#div_id_modality_return").hide();
+                        jQuery("#return").hide();
                     }
                 }
             });

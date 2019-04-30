@@ -45,7 +45,11 @@ class StudentMobilityForm(forms.ModelForm):
                     ),
                     Field("meeting_point"),
                     Field("custom_return"),
-                    Field("modality_return"),
+                    Div(
+                        Field("meeting_return"),
+                        Field("modality_return"),
+                        css_id="return",
+                    ),
                     Field("contact_return"),
                     Field("contact_phone_return"),
                     Div(
@@ -104,6 +108,7 @@ class StudentMobilityForm(forms.ModelForm):
             "address_start": _("Adresse du domicile de départ"),
             "no_meeting": _("Trajet personnel (en dehors des trajets proposés)"),
             "custom_return": _("Retour différent"),
+            "meeting_return": _("Si le retour se fait à un autre point de rencontre"),
             "modality_return": _("Modalité de retour"),
             "meeting_point": _("Lieu de rencontre"),
             "contact_return": _("Personne de contact"),

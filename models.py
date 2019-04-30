@@ -40,6 +40,8 @@ class StudentMobilityModel(models.Model):
     custom_return = models.BooleanField(default=False)
     modality_return = models.CharField(max_length=200, blank=True, null=True)
     meeting_point = models.ForeignKey(MeetingMobilityModel, on_delete=models.CASCADE, blank=True, null=True)
+    meeting_return = models.ForeignKey(MeetingMobilityModel, on_delete=models.CASCADE, blank=True, null=True,
+                                       related_name="meeting_return")
     contact_return = models.CharField(max_length=200, blank=True, null=True)
     contact_phone_return = models.CharField(max_length=20, blank=True, null=True)
     transportation = models.ForeignKey(TransportationMobilityModel, on_delete=models.CASCADE, blank=True, null=True)
