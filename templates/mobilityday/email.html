@@ -10,7 +10,10 @@
                 {% if o.by_bike %}
                 {% if not o.no_meeting %}<li>Lieu rencontre : {{ o.meeting_point.name }} </li>{% endif %}
                 <li>Adresse du domicile de départ : {{ o.address_start }}</li>
-                {% if o.modality_return %}<li>Modalité de retour : {{ o.modality_return }}</li>{% endif %}
+                {% if o.modality_return %}
+                <li>Modalité de retour : {{ o.modality_return }}</li>
+                    {% if o.meeting_return %}<li>Lieu de rencontre du retour : {{ o.meeting_return.name }}</li>{% endif %}
+                {% endif %}
                 <li>Personne de contact : {{ o.contact_return }}</li>
                 <li>Téléphone de contact : {{ o.contact_phone_return }}</li>
                 {% endif %}
