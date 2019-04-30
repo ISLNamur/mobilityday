@@ -96,7 +96,7 @@ class StudentMobilityForm(forms.ModelForm):
         labels = {
             "school": _("École"),
             "year": _("Année d'étude"),
-            "classe": _("Classe (lettre)"),
+            "classe": _("Classe (lettre seulement)"),
             "first_name": _("Prénom"),
             "last_name": _("Nom"),
             "email": _("Email (pour la confirmation et modification de votre enregistrement)"),
