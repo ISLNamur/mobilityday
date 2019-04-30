@@ -6,7 +6,7 @@
     const school = {};
     function loadStudents() {
         const transportations = {1: "En voiture", 2: "En bus", 3: "En train", 4: "À pied", 5: "En covoiturage"}
-        let url = "/mobilityday/api/mobilityday/?page_size=200";
+        let url = "/mobilityday/api/mobilityday/?page_size=200&ordering=-by_bike,-meeting_point__track,meeting_point";
         const selectedSchool = jQuery("#school").val();
         const selectedTrack = jQuery("#track").val();
         if (selectedSchool)
@@ -24,15 +24,24 @@
                     html += inscription.uuid;
                     html += '">';
                     html += '<h4 class="list-group-item-heading">';
-                    html += inscription.last_name + ' ' + inscription.first_name + ' (<em>' + schools[inscription.school] + '</em>)';
+                    const classe = inscription.year + inscription.classe.toUpperCase();
+                    html += inscription.last_name + ' ' + inscription.first_name + ' ' + classe + ' (<em>' + schools[inscription.school] + '</em>)';
                     html += '</h4>';
                     html += '<div class="list-group-item-text">';
                     html += '<ul>';
-                    html += '<li>Classe : ' + inscription.year + inscription.classe.toUpperCase() + '</li>';
-                    html += '<li>Vient en vélo : ';
-                    html += inscription.by_bike ? 'Oui' : 'Non';
-                    html += '</li>';
-                    html += '<li>E-mail : ' + inscription.email + '</li>';
+                    if (inscription.by_bike) {
+                        if (!inscription.no_meeting) {
+                            const meet = meetings.filter(i => i.meeting == inscription.meeting_point)[0];
+                            html += '<li>Lieu de rencontre :';
+                            html += '<br />Tracé : <strong>' + meet.track + '</strong>';
+                            html += '<br />Point de rencontre : <strong>' + meet.name + '</strong></li>';
+                            if (inscription.custom_return) {
+                                html += '<li>Modalité de retour : ' + inscription.modality_return + '</li>';
+                            }
+                        }
+                    } else {
+                        html += '<li>Ne vient pas en vélo</li>';
+                    }
                     html += '</ul>';
                     html += '</div>';
                     html += '<div class="collapse" id="';
@@ -40,6 +49,7 @@
                     html += '">';
                     html += '<div class="well">';
                     html += '<ul>';
+                    html += '<li>E-mail : ' + inscription.email + '</li>';
                     if (inscription.by_bike) {
                         html += '<li>Adresse du domicile de départ : ' + inscription.address_start + '</li>';
                         if (!inscription.no_meeting) {

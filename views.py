@@ -58,6 +58,7 @@ class MobilityDayViewSet(ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter,)
     filter_class = MobilityFilter
     pagination_class = PageNumberSizePagination
+    ordering_fields = ('by_bike', 'meeting_point__track', 'meeting_point',)
 
     def perform_create(self, serializer):
         email = serializer.validated_data["email"]
