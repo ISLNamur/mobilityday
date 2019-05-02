@@ -19,6 +19,7 @@
     <body class="container">
     {% load crispy_forms_tags %}
     {% crispy form %}
+    <div style="margin-top:50px" class="alert alert-danger">Si vous rencontrez des problèmes, merci d'utiliser un navigateur récent comme Firefox ou Chrome.</div>
     </body>
     <script>
         var uuid = "{{ uuid }}";
@@ -253,7 +254,7 @@
 
             jQuery("a[href='#en-velo'").click(function () {
                 window.setTimeout(function (){mymap.invalidateSize();}, 1000)
-            })
+            });
 
             jQuery("#button-id-from_other").click(function(e) {
                 const errors = testOther();
@@ -265,7 +266,7 @@
                     jQuery(".nav-tabs li:eq(3) a").tab("show");
                 }
                 jQuery(".nav-tabs li:eq(3) a").tab("show");
-            })
+            });
 
             jQuery("#button-id-from_bike").click(function(e) {
                 const errors = testByBike();
