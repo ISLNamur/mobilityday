@@ -17,81 +17,71 @@ class StudentMobilityForm(forms.ModelForm):
         self.helper.html5_required = True
 
         self.helper.layout = Layout(
-            TabHolder(
-                Tab("Identification",
-                    Field("school"),
-                    Field("year"),
-                    Field("classe"),
-                    Field("first_name"),
-                    Field("last_name"),
-                    Field("email"),
-                    Field("by_bike"),
-                    Div(
-                        HTML("Problème"),
-                        css_class="alert alert-danger",
-                        css_id="identification-error",
-                        role="alert",
-                        style="display:none;margin-top:15px"
-                    ),
-                    Button("from_ident", "Suivant"),
-                    ),
-                Tab("En vélo",
-                    Field("address_start"),
-                    Field("no_meeting"),
-                    HTML("<label id='maplabel'>Cliquez sur les différents points pour sélectionner le lieu de rencontre</label>"),
-                    Div(
-                        css_id="mapid",
-                        style="height:490px;width:100%"
-                    ),
-                    Field("meeting_point"),
-                    Field("custom_return"),
-                    Div(
-                        Field("meeting_return"),
-                        Field("modality_return"),
-                        css_id="return",
-                    ),
-                    Field("contact_return"),
-                    Field("contact_phone_return"),
-                    Div(
-                        HTML("Problème"),
-                        css_class="alert alert-danger",
-                        css_id="bike-error",
-                        role="alert",
-                        style="display:none;margin-top:15px"
-                    ),
-                    Button("from_bike", "Suivant"),
-                    ),
-                Tab("Autrement",
-                    Field("transportation"),
-                    Div(
-                        HTML("Problème"),
-                        css_class="alert alert-danger",
-                        css_id="other-error",
-                        role="alert",
-                        style="display:none;margin-top:15px"
-                    ),
-                    Button("from_other", "Suivant"),
-                    ),
-                Tab("Enregistrement",
-                    Alert(content="Un email de confirmation sera envoyé. Un lien sera mis à votre disposition afin de modifier les données de l'inscription. Si vous ne voyez pas l'email, merci de regarder dans le dossier des courriers indésirables.",
-                          css_class="alert-info"),
-                    Submit('submit', 'Soumettre'),
-                    HTML("<a id='button-id-addnew' class='btn btn-default' href='/mobilityday/'>Ajouter un autre élève</a>"),
-                    Div(
-                        HTML("Problème"),
-                        css_class="alert alert-danger",
-                        css_id="all-error",
-                        role="alert",
-                        style="display:none;margin-top:15px"
-                    ),
-                    Div(
-                        HTML("La demande a bien été envoyé. Merci ! Un email vous a été envoyé."),
-                        css_class="alert alert-success",
-                        css_id="success",
-                        role="alert",
-                        style="display:none;margin-top:15px"
-                    ),
-                    ),
+            Field("school"),
+            Field("year"),
+            Field("classe"),
+            Field("first_name"),
+            Field("last_name"),
+            Field("email"),
+            Field("by_bike"),
+            Div(
+                HTML("Problème"),
+                css_class="alert alert-danger",
+                css_id="identification-error",
+                role="alert",
+                style="display:none;margin-top:15px"
+            ),
+            Div(
+                Field("address_start"),
+                Field("no_meeting"),
+                HTML("<label id='maplabel'>Cliquez sur les différents points pour sélectionner le lieu de rencontre</label>"),
+                Div(
+                    css_id="mapid",
+                    style="height:490px;width:100%"
+                ),
+                Field("meeting_point"),
+                Field("custom_return"),
+                Div(
+                    Field("meeting_return"),
+                    Field("modality_return"),
+                    css_id="return",
+                ),
+                Field("contact_return"),
+                Field("contact_phone_return"),
+                Div(
+                    HTML("Problème"),
+                    css_class="alert alert-danger",
+                    css_id="bike-error",
+                    role="alert",
+                    style="display:none;margin-top:15px"
+                ),
+                css_id="by_bike"
+            ),
+            Field("transportation"),
+            Div(
+                HTML("Problème"),
+                css_class="alert alert-danger",
+                css_id="other-error",
+                role="alert",
+                style="display:none;margin-top:15px"
+            ),
+            Alert(content="Un email de confirmation sera envoyé. Un lien sera mis à votre disposition afin de modifier les données de l'inscription. Si vous ne voyez pas l'email, merci de regarder dans le dossier des courriers indésirables.",
+                  css_class="alert-info"),
+            Submit('submit', 'Soumettre'),
+            HTML("<a id='button-id-addnew' class='btn btn-default' href='/mobilityday/'>Ajouter un autre élève</a>"),
+            Div(
+                HTML("Problème"),
+                css_class="alert alert-danger",
+                css_id="all-error",
+                role="alert",
+                style="display:none;margin-top:15px"
+            ),
+            Div(
+                HTML("La demande a bien été envoyé. Merci ! Un email vous a été envoyé."),
+                css_class="alert alert-success",
+                css_id="success",
+                role="alert",
+                style="display:none;margin-top:15px"
             ),
         )
 

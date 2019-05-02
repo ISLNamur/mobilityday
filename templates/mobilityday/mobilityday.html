@@ -96,25 +96,24 @@
                     jQuery("#div_id_by_bike").show();
                 } else {
                     jQuery("#div_id_by_bike").hide();
-                    jQuery("#id_by_bike").prop('checked', true);
-                    jQuery(".nav-tabs li:eq(2)").addClass("disabled");
-                    jQuery(".nav-tabs li:eq(1)").removeClass("disabled");
                 }
             });
 
             if (jQuery("#id_by_bike").is(":checked")) {
-                jQuery(".nav-tabs li:eq(2)").addClass("disabled");
+                jQuery("#by_bike").show();
+                jQuery("#div_id_transportation").hide();
             } else {
-                jQuery(".nav-tabs li:eq(1)").addClass("disabled");
+                jQuery("#by_bike").hide();
+                jQuery("#div_id_transportation").show();
             }
 
             jQuery("#id_by_bike").change(function() {
                 if (jQuery("#id_by_bike").is(":checked")) {
-                    jQuery(".nav-tabs li:eq(2)").addClass("disabled");
-                    jQuery(".nav-tabs li:eq(1)").removeClass("disabled");
+                    jQuery("#by_bike").show();
+                    jQuery("#div_id_transportation").hide();
                 } else {
-                    jQuery(".nav-tabs li:eq(1)").addClass("disabled");
-                    jQuery(".nav-tabs li:eq(2)").removeClass("disabled");
+                    jQuery("#by_bike").hide();
+                    jQuery("#div_id_transportation").show();
                 }
             })
 
@@ -169,12 +168,12 @@
             });
 
             // Disable effectively disabled tabs.
-            jQuery(".nav-tabs li").on("click", function(e) {
-                if (jQuery(this).hasClass("disabled")) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
+            // jQuery(".nav-tabs li").on("click", function(e) {
+            //     if (jQuery(this).hasClass("disabled")) {
+            //         e.preventDefault();
+            //         return false;
+            //     }
+            // });
 
             function testIdentification() {
                 let errors = [];
@@ -235,49 +234,49 @@
             }
 
             // Move to following tab if button is pressed.
-            jQuery("#button-id-from_ident").click(function(e) {
-                const errors = testIdentification();
-                if (errors.length > 0) {
-                    jQuery("#identification-error").text(errors).show();
-                    return;
-                } else {
-                    jQuery("#identification-error").hide().text("");
-                }
+            // jQuery("#button-id-from_ident").click(function(e) {
+            //     const errors = testIdentification();
+            //     if (errors.length > 0) {
+            //         jQuery("#identification-error").text(errors).show();
+            //         return;
+            //     } else {
+            //         jQuery("#identification-error").hide().text("");
+            //     }
 
-                if (jQuery("#id_by_bike").is(":checked")) {
-                    jQuery(".nav-tabs li:eq(1) a").tab("show");
-                    mymap.invalidateSize();
-                } else {
-                    jQuery(".nav-tabs li:eq(2) a").tab("show");
-                }
-            });
+            //     if (jQuery("#id_by_bike").is(":checked")) {
+            //         jQuery(".nav-tabs li:eq(1) a").tab("show");
+            //         mymap.invalidateSize();
+            //     } else {
+            //         jQuery(".nav-tabs li:eq(2) a").tab("show");
+            //     }
+            // });
 
-            jQuery("a[href='#en-velo'").click(function () {
-                window.setTimeout(function (){mymap.invalidateSize();}, 1000)
-            });
+            // jQuery("a[href='#en-velo'").click(function () {
+            //     window.setTimeout(function (){mymap.invalidateSize();}, 1000)
+            // });
 
-            jQuery("#button-id-from_other").click(function(e) {
-                const errors = testOther();
-                if (errors.length > 0) {
-                    jQuery("#other-error").text(errors).show();
-                    return;
-                } else {
-                    jQuery("#other-error").hide().text("");
-                    jQuery(".nav-tabs li:eq(3) a").tab("show");
-                }
-                jQuery(".nav-tabs li:eq(3) a").tab("show");
-            });
+            // jQuery("#button-id-from_other").click(function(e) {
+            //     const errors = testOther();
+            //     if (errors.length > 0) {
+            //         jQuery("#other-error").text(errors).show();
+            //         return;
+            //     } else {
+            //         jQuery("#other-error").hide().text("");
+            //         jQuery(".nav-tabs li:eq(3) a").tab("show");
+            //     }
+            //     jQuery(".nav-tabs li:eq(3) a").tab("show");
+            // });
 
-            jQuery("#button-id-from_bike").click(function(e) {
-                const errors = testByBike();
-                if (errors.length > 0) {
-                    jQuery("#bike-error").text(errors).show();
-                    return;
-                } else {
-                    jQuery("#bike-error").hide().text("");
-                    jQuery(".nav-tabs li:eq(3) a").tab("show");
-                }
-            });
+            // jQuery("#button-id-from_bike").click(function(e) {
+            //     const errors = testByBike();
+            //     if (errors.length > 0) {
+            //         jQuery("#bike-error").text(errors).show();
+            //         return;
+            //     } else {
+            //         jQuery("#bike-error").hide().text("");
+            //         jQuery(".nav-tabs li:eq(3) a").tab("show");
+            //     }
+            // });
 
             // Handle submitting.
             jQuery("#submit-id-submit").click(function(e) {
