@@ -76,6 +76,7 @@ class StudentMobilityForm(forms.ModelForm):
                     Alert(content="Un email de confirmation sera envoyé. Un lien sera mis à votre disposition afin de modifier les données de l'inscription. Si vous ne voyez pas l'email, merci de regarder dans le dossier des courriers indésirables.",
                           css_class="alert-info"),
                     Submit('submit', 'Soumettre'),
+                    HTML("<a id='button-id-addnew' class='btn btn-default' href='/mobilityday/'>Ajouter un autre élève</a>"),
                     Div(
                         HTML("Problème"),
                         css_class="alert alert-danger",

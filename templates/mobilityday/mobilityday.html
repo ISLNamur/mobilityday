@@ -85,6 +85,7 @@
             }
             var jsonTest = new L.GeoJSON.AJAX(["/static/jour-mobi19.geojson"],{onEachFeature:settingUp}).addTo(mymap);
 
+            if (uuid.length == 0) jQuery("#button-id-addnew").hide();
             // En vélo ou pas.
             if (jQuery("#id_school").val() != 1) {
                 jQuery("#div_id_by_bike").hide();
@@ -314,6 +315,7 @@
                         uuid = data.uuid;
                         submit.val("Soumettre");
                         submit.removeAttr("disabled");
+                        jQuery("#button-id-addnew").show();
                     }
                 };
                 jQuery.ajax(ajax);
