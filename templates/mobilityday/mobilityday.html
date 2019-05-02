@@ -316,6 +316,11 @@
                         submit.val("Soumettre");
                         submit.removeAttr("disabled");
                         jQuery("#button-id-addnew").show();
+                    },
+                    error: function(data) {
+                        submit.val("Soumettre");
+                        submit.removeAttr("disabled");
+                        alert("Une erreur est survenue lors de l'enregistrement. Veuillez réessayer plus tard. Si le problème persiste merci de contacter informatique@isln.be");
                     }
                 };
                 jQuery.ajax(ajax);
