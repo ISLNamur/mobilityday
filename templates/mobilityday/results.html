@@ -38,7 +38,7 @@
                             if (inscription.custom_return) {
                                 html += '<br />Modalité de retour : ' + inscription.modality_return + '</li>';
                                 const meet_return = meetings.filter(i => i.meeting == inscription.meeting_return)[0];
-                                html += '<br />Point de rencontre <strong>retour</strong> : <strong>' + meet_return.name + '</strong></li>';
+                                if (meet_return) html += '<br />Point de rencontre <strong>retour</strong> : <strong>' + meet_return.name + '</strong></li>';
                             }
                         }
                     } else {
@@ -62,7 +62,7 @@
                             if (inscription.custom_return) {
                                 html += '<li>Modalité de retour : ' + inscription.modality_return + '</li>';
                                 const meet_return = meetings.filter(i => i.meeting == inscription.meeting_return)[0];
-                                html += '<li>Point de rencontre <strong>retour</strong> : <strong>' + meet_return.name + '</strong></li>';
+                                if (meet_return) html += '<li>Point de rencontre <strong>retour</strong> : <strong>' + meet_return.name + '</strong></li>';
                             }
                         }
                         html += '<li>Personne de contact : ' + inscription.contact_return + '</li>';
