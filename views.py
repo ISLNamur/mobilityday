@@ -78,16 +78,7 @@ class SchoolMobilityViewSet(ReadOnlyModelViewSet):
     serializer_class = SchoolMobilitySerializer
 
 
-class MeetingFilter(filters.FilterSet):
-    class Meta:
-        model = MeetingMobilityModel
-        fields = ("track",)
-
-
 class MeetingMobilityViewSet(ReadOnlyModelViewSet):
     queryset = MeetingMobilityModel.objects.all()
     serializer_class = MeetingMobilitySerializer
     pagination_class = PageNumberSizePagination
-    filter_backends = (filters.DjangoFilterBackend,)
-    filter_class = MeetingFilter
-
