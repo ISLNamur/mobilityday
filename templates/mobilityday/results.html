@@ -42,7 +42,7 @@
         if (selectedSchool)
             url += "&school=" + selectedSchool;
             url += "&meeting_point__track=" + selectedTrack;
-            url += "&meeting_point=" + selectedMeeting;
+            url += "&meeting=" + selectedMeeting;
         jQuery("#list").remove();
         jQuery.getJSON(url, function (data) {
             let items = [];

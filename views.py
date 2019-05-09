@@ -46,7 +46,7 @@ class MobilityFilter(filters.FilterSet):
 
     class Meta:
         model = StudentMobilityModel
-        fields = ("school", "meeting_point__track", "meeting_point",)
+        fields = ("school", "meeting_point__track")
 
     def meeting_by(self, queryset, name, value):
         return queryset.filter(Q(meeting_point__pk=value) | Q(meeting_return__pk=value))
