@@ -5,6 +5,34 @@
     jQuery(".navbar").hide();
     const school = {};
     let meetings = [];
+    function loadMeetingPoints() {
+        const track = jQuery("#track").val();
+        const url = "/mobilityday/api/meeting/?page_size=200&track=" + track;
+        jQuery.getJSON(url, function (data) {
+            meetings = data.results;
+            let m = ['<option selected="true" value="">Tous les points de rencontres</option>'];
+            jQuery.each(data.results, function (index, item) {
+                m.push('<option value="' + item.meeting + '">' + item.name + "</option>");
+            });
+            jQuery("#meeting").remove();
+            $( "<select/>", {
+                "id": "meeting",
+                "class": "form-control",
+                html: m.join("")
+            }).appendTo( "body" );
+
+            jQuery("#school").change(function () {
+                loadStudents();
+            });
+            jQuery("#track").change(function () {
+                loadMeetingPoints();
+            });
+            jQuery("#meeting").change(function () {
+                loadStudents();
+            });
+            loadStudents();
+        })
+    }
     function loadStudents() {
         const transportations = {1: "En voiture", 2: "En bus", 3: "En train", 4: "À pied", 5: "En covoiturage"}
         let url = "/mobilityday/api/mobilityday/?page_size=200&ordering=-by_bike,no_meeting,-meeting_point__track,meeting_point";
@@ -16,71 +44,71 @@
             url += "&meeting_point__track=" + selectedTrack;
             url += "&meeting=" + selectedMeeting;
         jQuery("#list").remove();
-            jQuery.getJSON(url, function (data) {
-                let items = [];
-                jQuery.each(data.results, function (index, inscription) {
-                    let html = '<a class="list-group-item" data-toggle="collapse" href="#';
-                    html += inscription.uuid;
-                    html += '" aria-expanded="false" aria-controls="';
-                    html += inscription.uuid;
-                    html += '">';
-                    html += '<h4 class="list-group-item-heading">';
-                    const classe = inscription.year + inscription.classe.toUpperCase();
-                    html += inscription.last_name + ' ' + inscription.first_name + ' ' + classe + ' (<em>' + schools[inscription.school] + '</em>)';
-                    html += '</h4>';
-                    html += '<div class="list-group-item-text">';
-                    html += '<ul>';
-                    if (inscription.by_bike) {
-                        if (!inscription.no_meeting) {
-                            const meet = meetings.filter(i => i.meeting == inscription.meeting_point)[0];
-                            html += '<br />Tracé : <strong>' + meet.track + '</strong>';
-                            html += '<br />Point de rencontre : <strong>' + meet.name + '</strong></li>';
-                            if (inscription.custom_return) {
-                                html += '<br />Modalité de retour : ' + inscription.modality_return + '</li>';
-                                const meet_return = meetings.filter(i => i.meeting == inscription.meeting_return)[0];
-                                if (meet_return) html += '<br />Point de rencontre <strong>retour</strong> : <strong>' + meet_return.name + '</strong></li>';
-                            }
+        jQuery.getJSON(url, function (data) {
+            let items = [];
+            jQuery.each(data.results, function (index, inscription) {
+                let html = '<a class="list-group-item" data-toggle="collapse" href="#';
+                html += inscription.uuid;
+                html += '" aria-expanded="false" aria-controls="';
+                html += inscription.uuid;
+                html += '">';
+                html += '<h4 class="list-group-item-heading">';
+                const classe = inscription.year + inscription.classe.toUpperCase();
+                html += inscription.last_name + ' ' + inscription.first_name + ' ' + classe + ' (<em>' + schools[inscription.school] + '</em>)';
+                html += '</h4>';
+                html += '<div class="list-group-item-text">';
+                html += '<ul>';
+                if (inscription.by_bike) {
+                    if (!inscription.no_meeting) {
+                        const meet = meetings.filter(i => i.meeting == inscription.meeting_point)[0];
+                        html += '<br />Tracé : <strong>' + meet.track + '</strong>';
+                        html += '<br />Point de rencontre : <strong>' + meet.name + '</strong></li>';
+                        if (inscription.custom_return) {
+                            html += '<br />Modalité de retour : ' + inscription.modality_return + '</li>';
+                            const meet_return = meetings.filter(i => i.meeting == inscription.meeting_return)[0];
+                            if (meet_return) html += '<br />Point de rencontre <strong>retour</strong> : <strong>' + meet_return.name + '</strong></li>';
                         }
-                    } else {
-                        html += '<li>Ne vient pas en vélo</li>';
                     }
-                    html += '</ul>';
-                    html += '</div>';
-                    html += '<div class="collapse" id="';
-                    html += inscription.uuid;
-                    html += '">';
-                    html += '<div class="well">';
-                    html += '<ul>';
-                    html += '<li>E-mail : ' + inscription.email + '</li>';
-                    if (inscription.by_bike) {
-                        html += '<li>Adresse du domicile de départ : ' + inscription.address_start + '</li>';
-                        if (!inscription.no_meeting) {
-                            const meet = meetings.filter(i => i.meeting == inscription.meeting_point)[0];
-                            html += '<li>Lieu de rencontre :';
-                            html += '<br />Tracé : <strong>' + meet.track + '</strong>';
-                            html += '<br />Point de rencontre : <strong>' + meet.name + '</strong></li>';
-                            if (inscription.custom_return) {
-                                html += '<li>Modalité de retour : ' + inscription.modality_return + '</li>';
-                                const meet_return = meetings.filter(i => i.meeting == inscription.meeting_return)[0];
-                                if (meet_return) html += '<li>Point de rencontre <strong>retour</strong> : <strong>' + meet_return.name + '</strong></li>';
-                            }
+                } else {
+                    html += '<li>Ne vient pas en vélo</li>';
+                }
+                html += '</ul>';
+                html += '</div>';
+                html += '<div class="collapse" id="';
+                html += inscription.uuid;
+                html += '">';
+                html += '<div class="well">';
+                html += '<ul>';
+                html += '<li>E-mail : ' + inscription.email + '</li>';
+                if (inscription.by_bike) {
+                    html += '<li>Adresse du domicile de départ : ' + inscription.address_start + '</li>';
+                    if (!inscription.no_meeting) {
+                        const meet = meetings.filter(i => i.meeting == inscription.meeting_point)[0];
+                        html += '<li>Lieu de rencontre :';
+                        html += '<br />Tracé : <strong>' + meet.track + '</strong>';
+                        html += '<br />Point de rencontre : <strong>' + meet.name + '</strong></li>';
+                        if (inscription.custom_return) {
+                            html += '<li>Modalité de retour : ' + inscription.modality_return + '</li>';
+                            const meet_return = meetings.filter(i => i.meeting == inscription.meeting_return)[0];
+                            if (meet_return) html += '<li>Point de rencontre <strong>retour</strong> : <strong>' + meet_return.name + '</strong></li>';
                         }
-                        html += '<li>Personne de contact : ' + inscription.contact_return + '</li>';
-                        html += '<li>Téléphone de contact : ' + inscription.contact_phone_return + '</li>';
-                    } else {
-                        html += '<li>Moyen de transport : ' + transportations[inscription.transportation] + '</li>';
                     }
-                    html += '</ul>';
-                    html += '</div></div></a>';
-                    items.push(html);
-                });
-
-                $( "<div/>", {
-                    "id": "list",
-                    "class": "list-group",
-                    html: items.join( "" )
-                }).appendTo( "body" );
+                    html += '<li>Personne de contact : ' + inscription.contact_return + '</li>';
+                    html += '<li>Téléphone de contact : ' + inscription.contact_phone_return + '</li>';
+                } else {
+                    html += '<li>Moyen de transport : ' + transportations[inscription.transportation] + '</li>';
+                }
+                html += '</ul>';
+                html += '</div></div></a>';
+                items.push(html);
             });
+
+            $( "<div/>", {
+                "id": "list",
+                "class": "list-group",
+                html: items.join( "" )
+            }).appendTo( "body" );
+        });
     };
 
     jQuery(document).ready(function () {
@@ -102,29 +130,7 @@
                 html: "<option value=''>Tous les tracés</option><option value='Itinéraire Est'>Itinéraire Est</option><option value='Itinéraire Nord-Est'>Itinéraire Nord-Est</option><option value='Itinéraire Sud'>Itinéraire Sud</option><option value='Itinéraire Ouest'>Itinéraire Ouest</option><option value='Itinéraire Nord'>Itinéraire Nord</option>"
 
             }).appendTo( "body" );
-            jQuery.getJSON("/mobilityday/api/meeting/?page_size=200", function (data) {
-                meetings = data.results;
-                let m = ['<option selected="true" value="">Tous les points de rencontres</option>'];
-                jQuery.each(data.results, function (index, item) {
-                    m.push('<option value="' + item.meeting + '">' + item.name + "</option>");
-                });
-                $( "<select/>", {
-                    "id": "meeting",
-                    "class": "form-control",
-                    html: m.join("")
-                }).appendTo( "body" );
-
-                jQuery("#school").change(function () {
-                    loadStudents();
-                });
-                jQuery("#track").change(function () {
-                    loadStudents();
-                });
-                jQuery("#meeting").change(function () {
-                    loadStudents();
-                });
-                loadStudents();
-            })
+            loadMeetingPoints();
         });
     });
     
